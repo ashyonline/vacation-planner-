@@ -222,7 +222,7 @@ function render() {
       <td class="price-cell ${r.edited ? "edited" : ""}" data-key="${r.key}" title="Click to enter real price">€${r.total}${r.edited ? " ✓" : ""}</td>
       <td>€${r.perNight}</td>
       <td><a href="${mapLink(r.h)}" target="_blank" rel="noopener">Map</a></td>
-      <td><a href="${bookingSearchUrl(r.o.ci, r.o.co)}" target="_blank" rel="noopener">Check</a></td>`;
+      <td><a href="${bookingSearchUrl(r.o.ci, r.o.co)}" target="_blank" rel="noopener">Check</a> <button type="button" class="copy-link" title="Copy this row's Booking URL">Copy</button></td>`;
     tb.appendChild(tr);
   });
 
@@ -245,6 +245,17 @@ function render() {
       if (!Number.isFinite(n) || n <= 0) return alert("Enter a valid price.");
       saveOverride(cell.dataset.key, n);
       render();
+    };
+  });
+
+  // Copy row Booking URLs (pasting into a fresh tab forces a clean Booking search)
+  tb.querySelectorAll(".copy-link").forEach((btn) => {
+    btn.onclick = async (ev) => {
+      ev.stopPropagation();
+      const url = btn.closest("tr")?.querySelector("td:last-child a")?.href || "";
+      try { await navigator.clipboard.writeText(url); btn.textContent = "Copied"; }
+      catch { prompt("Copy this Booking URL:", url); return; }
+      setTimeout(() => { btn.textContent = "Copy"; }, 1500);
     };
   });
 
