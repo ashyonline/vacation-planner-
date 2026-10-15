@@ -1,0 +1,14 @@
+{
+  "name": "booking-assist",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Assisted human-like Booking.com opener for Barcelona stay comparer (persistent profile, slow, manual login)",
+  "scripts": {
+    "assist": "node booking-assist.mjs",
+    "dry": "node booking-assist.mjs --dry-run"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}

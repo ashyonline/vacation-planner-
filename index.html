@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vacation Planner – Kitchen + Family Filters</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <h1>🏠 Vacation Planner</h1>
+  <p class="subtitle">Family trips · Kitchen filter · Location presets (default: Barcelona, near Sagrada Família 41.4036, 2.1744)</p>
+</header>
+
+<main>
+  <section class="card" id="trip-setup">
+    <h2>1. Pick your base dates</h2>
+    <div class="grid">
+      <label>Location
+        <select id="location">
+          <option value="barcelona" selected>Barcelona (default)</option>
+        </select>
+      </label>
+      <label>Base check-in (calendar)
+        <input type="date" id="base-checkin" />
+      </label>
+      <label>Nights (3 = long weekend)
+        <input type="number" id="nights" value="3" min="1" max="7" />
+      </label>
+      <label>Adults
+        <input type="number" id="adults" value="2" min="1" max="6" />
+      </label>
+      <label>Kids (excluding baby)
+        <input type="number" id="kids" value="2" min="0" max="6" />
+      </label>
+      <label>Kid ages (comma separated)
+        <input type="text" id="kid-ages" value="3,6" placeholder="e.g. 3,6" />
+      </label>
+      <label class="check"><input type="checkbox" id="has-baby" checked /> Plus baby (&lt;2y, cot on request)</label>
+    </div>
+    <div class="grid" style="margin-top:10px">
+      <label>Search Booking.com as
+        <select id="search-mode">
+          <option value="4" selected>4 people (2+2) + inform baby later (Recommended)</option>
+          <option value="5">5 people (2+2+baby) – strict</option>
+        </select>
+      </label>
+      <label>Message template
+        <select id="msg-lang">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+        </select>
+      </label>
+    </div>
+    <p class="hint" id="occupancy-note"></p>
+    <div class="presets">
+      <button id="open-booking-base" type="button">🔎 Open Booking.com for base dates (as human)</button>
+      <button id="copy-msg" type="button">📋 Copy baby-cot message</button>
+    </div>
+    <div class="presets">
+      <button id="preset-fri-off" type="button">↩ Friday off (Thu → Sun)</button>
+      <button id="preset-mon-off" type="button">Monday off (Fri → Mon) ↪</button>
+      <button id="preset-next-weekend" type="button">Next weekend</button>
+    </div>
+
+    <h3>Check-in flex <span class="hint">(shifts whole trip – your ±1, ±2, ±3)</span></h3>
+    <div class="flex-row" id="checkin-flex">
+      <label><input type="checkbox" value="-3" checked /> −3</label>
+      <label><input type="checkbox" value="-2" checked /> −2</label>
+      <label><input type="checkbox" value="-1" checked /> −1</label>
+      <label><input type="checkbox" value="0" checked /> ±0 (base)</label>
+      <label><input type="checkbox" value="+1" checked /> +1</label>
+      <label><input type="checkbox" value="+2" checked /> +2</label>
+      <label><input type="checkbox" value="+3" checked /> +3</label>
+    </div>
+
+    <h3>Check-out flex <span class="hint">(stay-length options – varies check-out independently)</span></h3>
+    <div class="flex-row" id="length-flex">
+      <label><input type="checkbox" value="-1" checked /> −1 night</label>
+      <label><input type="checkbox" value="0" checked /> base length</label>
+      <label><input type="checkbox" value="+1" checked /> +1 night</label>
+    </div>
+    <p class="hint">Example: base Thu→Sun (3n). With flex on you also compare Wed→Sat, Fri→Mon, Thu→Sat (2n), Thu→Mon (4n), etc. Perfect for “Friday off vs Monday off” and “this weekend vs next”.</p>
+  </section>
+
+  <section class="card" id="filters">
+    <h2>2. Booking.com-missing filters</h2>
+    <div class="grid">
+      <label class="check"><input type="checkbox" id="f-kitchen" checked /> Must have kitchen / kitchenette</label>
+      <label class="check"><input type="checkbox" id="f-family" checked /> Family-friendly only (cots / family rooms)</label>
+      <label>Max distance to Sagrada Família: <strong id="dist-label">1.5 km</strong>
+        <input type="range" id="f-distance" min="0.3" max="3" step="0.1" value="1.5" />
+      </label>
+      <label>Min rating: <strong id="rating-label">7.5</strong>
+        <input type="range" id="f-rating" min="7" max="9" step="0.1" value="7.5" />
+      </label>
+      <label>Max total budget (€)
+        <input type="number" id="f-budget" value="800" min="100" max="3000" step="10" />
+      </label>
+      <label>Sort by
+        <select id="sort-by">
+          <option value="total">Total price ↑</option>
+          <option value="perNight">Per night ↑</option>
+          <option value="distance">Distance ↑</option>
+          <option value="rating">Rating ↓</option>
+        </select>
+      </label>
+    </div>
+    <h3>Booking.com link filters <span class="hint">(added to the Booking URL as nflt)</span></h3>
+    <div class="grid">
+      <label class="check"><input type="checkbox" id="b-kitchen" checked /> Kitchen (roomfacility=999)</label>
+      <label class="check"><input type="checkbox" id="b-breakfast" checked /> Breakfast included (mealplan=1)</label>
+      <label class="check"><input type="checkbox" id="b-kidsclub" /> Kids club (hotelfacility=144)</label>
+      <label class="check"><input type="checkbox" id="b-indoorpool" /> Indoor pool (hotelfacility=103)</label>
+      <label>Max €/night on Booking
+        <input type="number" id="b-maxprice" value="280" min="50" max="2000" step="10" />
+      </label>
+    </div>
+    <p class="hint">Kids club + indoor pool under €280 is very strict in Barcelona — uncheck one if you get 0 results.</p>
+  </section>
+
+  <section class="card" id="results-section">
+    <h2>3. Compare <span id="result-count"></span></h2>
+    <div id="best-deal"></div>
+    <div class="table-wrap">
+      <table id="results">
+        <thead>
+          <tr>
+            <th>Check-in → Check-out (shift)</th>
+            <th>Type</th>
+            <th>Hotel (kitchen · distance)</th>
+            <th>Rating</th>
+            <th>Nights</th>
+            <th>Total (click to edit)</th>
+            <th>€/night</th>
+            <th>Map</th>
+            <th>Booking</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="actions">
+      <button id="export-csv" type="button">⬇ Export CSV</button>
+      <button id="reset-prices" type="button">↺ Reset edited prices</button>
+      <span class="hint">Prices are estimates to compare weekends. Click any total to enter the real Booking.com price – saved in your browser.</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Hotels in dataset</h2>
+    <div id="hotel-list" class="hotel-list"></div>
+    <p class="hint">All have kitchen/kitchenette. Distances are walking distance to Sagrada Família. Booking.com blocks combined “kitchen + near Sagrada” filtering – this app does it. Replace estimates with real prices you see for your dates for an exact comparison.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Sagrada Família: 41.4036, 2.1744 · Built for family long-weekend comparison · Data stored locally only</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
