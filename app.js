@@ -210,8 +210,10 @@ function render() {
   $("result-count").textContent = `– ${rows.length} options`;
   const tb = document.querySelector("#results tbody");
   tb.innerHTML = "";
+  const showDebug = $("debug-urls")?.checked;
   rows.forEach((r, i) => {
     const shiftLbl = r.o.shift === 0 ? "base" : r.o.shift > 0 ? `+${r.o.shift}` : `${r.o.shift}`;
+    const bUrl = bookingSearchUrl(r.o.ci, r.o.co);
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><strong>${fmt(r.o.ci)} → ${fmt(r.o.co)}</strong><span class="badge">${shiftLbl}, ${r.o.nights}n</span></td>
@@ -222,7 +224,7 @@ function render() {
       <td class="price-cell ${r.edited ? "edited" : ""}" data-key="${r.key}" title="Click to enter real price">€${r.total}${r.edited ? " ✓" : ""}</td>
       <td>€${r.perNight}</td>
       <td><a href="${mapLink(r.h)}" target="_blank" rel="noopener">Map</a></td>
-      <td><a href="${bookingSearchUrl(r.o.ci, r.o.co)}" target="_blank" rel="noopener">Check</a> <button type="button" class="copy-link" title="Copy this row's Booking URL">Copy</button></td>`;
+      <td><a href="${bUrl}" target="_blank" rel="noopener">Check</a> <button type="button" class="copy-link" title="Copy this row's Booking URL">Copy</button>${showDebug ? `<div class="debug-url">${bUrl}</div>` : ""}</td>`;
     tb.appendChild(tr);
   });
 
@@ -279,7 +281,7 @@ function nextWeekday(target) {
 }
 
 function bind() {
-  ["location", "base-checkin", "nights", "adults", "kids", "kid-ages", "has-baby", "search-mode", "msg-lang", "f-kitchen", "f-family", "f-distance", "f-rating", "f-budget", "sort-by", "b-kitchen", "b-breakfast", "b-kidsclub", "b-indoorpool", "b-maxprice"]
+  ["location", "base-checkin", "nights", "adults", "kids", "kid-ages", "has-baby", "search-mode", "msg-lang", "f-kitchen", "f-family", "f-distance", "f-rating", "f-budget", "sort-by", "b-kitchen", "b-breakfast", "b-kidsclub", "b-indoorpool", "b-maxprice", "debug-urls"]
     .forEach((id) => $(id)?.addEventListener("input", render));
   document.querySelectorAll("#checkin-flex input, #length-flex input").forEach((el) => el.addEventListener("change", render));
   ["location", "search-mode", "msg-lang", "has-baby", "b-kitchen", "b-breakfast", "b-kidsclub", "b-indoorpool"].forEach((id) => $(id)?.addEventListener("change", render));
