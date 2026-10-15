@@ -91,12 +91,14 @@ function buildOptions() {
   const baseNights = Math.max(1, parseInt($("nights").value || "2", 10));
   const inShifts = selectedValues("checkin-flex");
   const lenShifts = selectedValues("length-flex");
+  const today = new Date(); today.setHours(0, 0, 0, 0); // Booking rejects past check-ins (strips dates + filters)
   const opts = [];
   for (const dx of inShifts) {
     for (const dn of lenShifts) {
       const nights = baseNights + dn;
       if (nights < 1) continue;
       const ci = addDays(base, dx);
+      if (ci < today) continue; // unbookable: would lose dates/filters on Booking
       const co = addDays(ci, nights);
       opts.push({ ci, co, nights, shift: dx, lenShift: dn });
     }

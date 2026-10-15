@@ -106,9 +106,11 @@ function bookingUrl(ci, co) {
 }
 
 const combos = [];
+const todayMidnight = new Date(); todayMidnight.setHours(0, 0, 0, 0);
 for (const dx of shifts) for (const dn of lenShifts) {
   const n = nightsBase + dn; if (n < 1) continue;
   const ci = addDays(base, dx); const co = addDays(ci, n);
+  if (ci < todayMidnight) { console.log(`Skipping ${toISO(ci)} → ${toISO(co)}: check-in is in the past (Booking strips dates + filters).`); continue; }
   combos.push({ ci, co, nights: n, shift: dx, url: bookingUrl(ci, co) });
 }
 
