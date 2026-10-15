@@ -1,7 +1,7 @@
 # Vacation Planner
 
-Compare family long weekends with the filters Booking.com lacks:
-**kitchen + location presets**, plus Friday-off vs Monday-off and this-weekend-vs-next.
+Compare 2-night family long weekends (Friday to Sunday or Saturday to Monday) with the filters Booking.com lacks:
+**kitchen + location presets**, plus weekend vs Monday-off and this-weekend-vs-next.
 
 Barcelona is the default location preset (Sagrada Família focus).
 
@@ -28,8 +28,8 @@ Favorites filters are a second parameter, joined into Booking's `nflt`:
 
 - **Calendar picker**: base check-in date input.
 - **±1, ±2, ±3 check-in flex**: checkboxes shift the whole trip (e.g. Thu→Sun becomes Fri→Mon = Monday-off instead of Friday-off).
-- **Check-out flex**: −1 / base / +1 night options vary check-out independently (compare 2n vs 3n vs 4n).
-- **Presets**: “Friday off (Thu→Sun)” and “Monday off (Fri→Mon)” one-click.
+- **Check-out flex**: −1 / base / +1 night options vary check-out independently (compare 1n vs 2n vs 3n).
+- **Presets**: “Weekend (Fri→Sun)” and “Monday off (Sat→Mon)” one-click.
 - **Kitchen filter**: all 8 sample stays have kitchen/kitchenette with type shown.
 - **Near Sagrada Família**: distance slider (0.3–3 km), walk-time estimate, map link. Sagrada coords: 41.4036, 2.1744.
 - **Family**: adults/kids inputs, family-friendly toggle, sleeps/cots info.
@@ -45,7 +45,7 @@ See `booking-assist/README.md`. Quick test:
 
 ```bash
 cd booking-assist
-node booking-assist.mjs --dry-run --base 2026-11-06 --nights 3 --shifts=-1,0,1
+node booking-assist.mjs --dry-run --base 2026-11-06 --nights 2 --shifts=-1,0,1
 ```
 
 Then install once (`npm install && npx playwright install chromium`), run

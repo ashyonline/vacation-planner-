@@ -14,11 +14,11 @@ npx playwright install chromium
 ## 2. Dry run (no browser — safe first test)
 
 ```bash
-node booking-assist.mjs --dry-run --base 2026-11-06 --nights 3 --shifts=-1,0,1
+node booking-assist.mjs --dry-run --base 2026-11-06 --nights 2 --shifts=-1,0,1
 node booking-assist.mjs --help
 ```
 
-You should see 3 Booking URLs for Thu→Sun / Fri→Mon style shifts. Paste one into your normal browser — you’re already logged in, results appear like a human search.
+You should see 3 Booking URLs for Fri→Sun / Sat→Mon style shifts. Paste one into your normal browser — you’re already logged in, results appear like a human search.
 
 ## 3. Login once (recommended)
 
@@ -31,7 +31,7 @@ A Chrome window opens with a fresh `booking-assist/profile` folder. Log into Boo
 ## 4. First real test (1 page only)
 
 ```bash
-node booking-assist.mjs --once --base 2026-11-06 --nights 3
+node booking-assist.mjs --once --base 2026-11-06 --nights 2
 ```
 
 Expected: browser opens Booking, you press ENTER, it visits 1 search (2 adults + 2 kids ages 4,6 — baby hidden per search-as-4), waits ~4s, prints top property cards (best effort), saves screenshot to `out/`. Copy the real price into the main app by clicking the € total.
@@ -39,7 +39,7 @@ Expected: browser opens Booking, you press ENTER, it visits 1 search (2 adults +
 ## 5. Full flex test (slow, human pauses 10–20s between pages)
 
 ```bash
-node booking-assist.mjs --base 2026-11-06 --nights 3 --shifts=-3,-2,-1,0,1,2,3
+node booking-assist.mjs --base 2026-11-06 --nights 2 --shifts=-3,-2,-1,0,1,2,3
 ```
 
 Go make coffee. If Booking shows a CAPTCHA or login wall: solve it in the opened window — the script waits between pages anyway.

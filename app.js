@@ -47,13 +47,15 @@ function fmt(d) { return d.toLocaleDateString("en-GB", { weekday: "short", day: 
 function fmtISO(iso) { return fmt(parseDate(iso)); }
 
 function tripType(checkin, checkout) {
-  // checkin inclusive, checkout exclusive
+  // Long weekend = 2 nights: Fri->Sun (standard weekend) or Sat->Mon (Monday off).
+  // checkin inclusive, checkout exclusive; checkout day decides Monday-off.
+  if (checkout.getDay() === 1) return { label: "Monday off", cls: "mon" };
+  if (checkin.getDay() === 4) return { label: "Friday off", cls: "fri" };
   const days = [];
   for (let d = new Date(checkin); d < checkout; d = addDays(d, 1)) days.push(d.getDay());
   const hasFri = days.includes(5), hasMon = days.includes(1);
-  if (hasFri && !hasMon) return { label: "Friday off", cls: "fri" };
-  if (hasMon && !hasFri) return { label: "Monday off", cls: "mon" };
   if (hasFri && hasMon) return { label: "Long bridge", cls: "best" };
+  if (hasFri) return { label: "Weekend", cls: "" };
   return { label: "Midweek", cls: "" };
 }
 
@@ -86,7 +88,7 @@ function buildOptions() {
   const baseISO = $("base-checkin").value;
   if (!baseISO) return [];
   const base = parseDate(baseISO);
-  const baseNights = Math.max(1, parseInt($("nights").value || "3", 10));
+  const baseNights = Math.max(1, parseInt($("nights").value || "2", 10));
   const inShifts = selectedValues("checkin-flex");
   const lenShifts = selectedValues("length-flex");
   const opts = [];
@@ -271,8 +273,8 @@ function bind() {
   document.querySelectorAll("#checkin-flex input, #length-flex input").forEach((el) => el.addEventListener("change", render));
   ["location", "search-mode", "msg-lang", "has-baby", "b-kitchen", "b-breakfast", "b-kidsclub", "b-indoorpool"].forEach((id) => $(id)?.addEventListener("change", render));
 
-  $("preset-fri-off").onclick = () => { $("base-checkin").value = toISO(nextWeekday(4)); $("nights").value = 3; render(); };
-  $("preset-mon-off").onclick = () => { $("base-checkin").value = toISO(nextWeekday(5)); $("nights").value = 3; render(); };
+  $("preset-fri-off").onclick = () => { $("base-checkin").value = toISO(nextWeekday(5)); $("nights").value = 2; render(); };
+  $("preset-mon-off").onclick = () => { $("base-checkin").value = toISO(nextWeekday(6)); $("nights").value = 2; render(); };
   $("preset-next-weekend").onclick = () => { const f = nextWeekday(5); $("base-checkin").value = toISO(f); render(); };
 
   $("export-csv").onclick = () => {
@@ -295,7 +297,7 @@ function bind() {
     const baseISO = $("base-checkin").value;
     if (!baseISO) return alert("Pick a base check-in date first.");
     const ci = parseDate(baseISO);
-    const nights = Math.max(1, parseInt($("nights").value || "3", 10));
+    const nights = Math.max(1, parseInt($("nights").value || "2", 10));
     window.open(bookingSearchUrl(ci, addDays(ci, nights)), "_blank", "noopener");
   };
   $("copy-msg").onclick = async () => {

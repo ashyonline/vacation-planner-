@@ -9,7 +9,7 @@
 <body>
 <header>
   <h1>🏠 Vacation Planner</h1>
-  <p class="subtitle">Family trips · Kitchen filter · Location presets (default: Barcelona, near Sagrada Família 41.4036, 2.1744)</p>
+  <p class="subtitle">2-night family trips · Kitchen filter · Location presets (default: Barcelona, near Sagrada Família 41.4036, 2.1744)</p>
 </header>
 
 <main>
@@ -24,8 +24,8 @@
       <label>Base check-in (calendar)
         <input type="date" id="base-checkin" />
       </label>
-      <label>Nights (3 = long weekend)
-        <input type="number" id="nights" value="3" min="1" max="7" />
+      <label>Nights (2 = long weekend)
+        <input type="number" id="nights" value="2" min="1" max="7" />
       </label>
       <label>Adults
         <input type="number" id="adults" value="2" min="1" max="6" />
@@ -58,8 +58,8 @@
       <button id="copy-msg" type="button">📋 Copy baby-cot message</button>
     </div>
     <div class="presets">
-      <button id="preset-fri-off" type="button">↩ Friday off (Thu → Sun)</button>
-      <button id="preset-mon-off" type="button">Monday off (Fri → Mon) ↪</button>
+      <button id="preset-fri-off" type="button">↩ Weekend (Fri → Sun)</button>
+      <button id="preset-mon-off" type="button">Monday off (Sat → Mon) ↪</button>
       <button id="preset-next-weekend" type="button">Next weekend</button>
     </div>
 
@@ -80,7 +80,7 @@
       <label><input type="checkbox" value="0" checked /> base length</label>
       <label><input type="checkbox" value="+1" checked /> +1 night</label>
     </div>
-    <p class="hint">Example: base Thu→Sun (3n). With flex on you also compare Wed→Sat, Fri→Mon, Thu→Sat (2n), Thu→Mon (4n), etc. Perfect for “Friday off vs Monday off” and “this weekend vs next”.</p>
+    <p class="hint">Example: base Fri→Sun (2n). With flex on you also compare Thu→Sat, Sat→Mon, Fri→Sat (1n), Fri→Mon (3n), etc. Long weekend = 2 nights: Friday to Sunday or Saturday to Monday.</p>
   </section>
 
   <section class="card" id="filters">

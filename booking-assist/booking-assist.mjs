@@ -4,10 +4,10 @@
 //
 // Usage:
 //   node booking-assist.mjs --help
-//   node booking-assist.mjs --dry-run --base 2026-11-06 --nights 3
+//   node booking-assist.mjs --dry-run --base 2026-11-06 --nights 2
 //   node booking-assist.mjs --login-only
-//   node booking-assist.mjs --once --base 2026-11-06 --nights 3          (1 page, for first test)
-//   node booking-assist.mjs --base 2026-11-06 --nights 3 --shifts=-1,0,1 (3 pages, slow)
+//   node booking-assist.mjs --once --base 2026-11-06 --nights 2          (1 page, for first test)
+//   node booking-assist.mjs --base 2026-11-06 --nights 2 --shifts=-1,0,1 (3 pages, slow)
 //
 // Output: ./out/results-<timestamp>.json + screenshots per search.
 
@@ -30,7 +30,7 @@ if (args.help || args.h) {
 booking-assist — human-like Booking.com opener
 
   --base YYYY-MM-DD        base check-in (default: next Friday)
-  --nights N               base nights (default: 3)
+  --nights N               base nights (default: 2)
   --shifts a,b,c           check-in shifts, e.g. -1,0,1 (default: 0; use -3,-2,-1,0,1,2,3 for full flex)
   --len-shifts a,b         length shifts, e.g. 0 or -1,0,1 (default: 0)
   --adults N               default 2
@@ -59,7 +59,7 @@ function parseISO(s) { const [y, m, d] = s.split("-").map(Number); return new Da
 function addDays(d, n) { const c = new Date(d); c.setDate(c.getDate() + n); return c; }
 
 const base = args.base ? parseISO(args.base) : nextFriday();
-const nightsBase = parseInt(args.nights ?? "3", 10);
+const nightsBase = parseInt(args.nights ?? "2", 10);
 const shifts = args.once === "1" || args.once === true ? [0] : String(args.shifts ?? "0").split(",").map(Number);
 const lenShifts = String(args["len-shifts"] ?? "0").split(",").map(Number);
 const adults = parseInt(args.adults ?? "2", 10);
