@@ -35,6 +35,11 @@ booking-assist — human-like Booking.com opener
   --len-shifts a,b         length shifts, e.g. 0 or -1,0,1 (default: 0)
   --adults N               default 2
   --children-ages 4,6      default 4,6 (baby hidden = search-as-4)
+  --kitchen=1/0            kitchen filter roomfacility=999 (default 1; NOT 24 — 24 returns hotels like Sheraton without a real kitchen)
+  --breakfast=1/0          breakfast included mealplan=1 (default 1)
+  --kidsclub=1/0           kids club hotelfacility=144 (default 0 — strict)
+  --indoorpool=1/0         indoor pool hotelfacility=103 (default 0 — strict)
+  --maxprice N             max EUR/night, 0 disables (default 280)
   --once                    only base date (safest first test)
   --login-only              just open Booking.com so you can log in manually
   --dry-run                 print URLs only, launch no browser
@@ -65,6 +70,22 @@ const lenShifts = String(args["len-shifts"] ?? "0").split(",").map(Number);
 const adults = parseInt(args.adults ?? "2", 10);
 const ages = String(args["children-ages"] ?? "3,6").split(",").map((s) => parseInt(s.trim(), 10)).filter(Number.isFinite);
 
+// Favorites filters, same defaults as the web app (kitchen + breakfast + €280 on).
+const fKitchen = String(args.kitchen ?? "1") === "1";
+const fBreakfast = String(args.breakfast ?? "1") === "1";
+const fKidsclub = String(args.kidsclub ?? "0") === "1";
+const fIndoorpool = String(args.indoorpool ?? "0") === "1";
+const fMaxprice = parseInt(args.maxprice ?? "280", 10);
+function bookingNflt() {
+  const parts = [];
+  if (fKitchen) parts.push("roomfacility=999");
+  if (fKidsclub) parts.push("hotelfacility=144");
+  if (fIndoorpool) parts.push("hotelfacility=103");
+  if (fBreakfast) parts.push("mealplan=1");
+  if (Number.isFinite(fMaxprice) && fMaxprice > 0) parts.push(`price=EUR-min-${fMaxprice}-1`);
+  return parts.join(";");
+}
+
 function bookingUrl(ci, co) {
   // Proven format from user's working search: needs dest_id/dest_type,
   // ss-only is NOT enough (lands on "enter destination").
@@ -79,6 +100,8 @@ function bookingUrl(ci, co) {
     group_children: String(ages.length),
   });
   ages.forEach((a) => p.append("age", String(a)));
+  const nflt = bookingNflt();
+  if (nflt) p.set("nflt", nflt);
   return `https://www.booking.com/searchresults.html?${p.toString()}`;
 }
 

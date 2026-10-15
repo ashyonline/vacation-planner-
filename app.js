@@ -40,7 +40,7 @@ const LS_KEY = "vacation-planner-overrides-v1";
 const getOverrides = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { return {}; } };
 const saveOverride = (k, v) => { const o = getOverrides(); o[k] = v; localStorage.setItem(LS_KEY, JSON.stringify(o)); };
 
-function toISO(d) { return d.toISOString().slice(0, 10); }
+function toISO(d) { const p2 = (n) => String(n).padStart(2, "0"); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`; } // local date, NOT toISOString (UTC shifts the day in CET)
 function parseDate(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
 function addDays(d, n) { const c = new Date(d); c.setDate(c.getDate() + n); return c; }
 function fmt(d) { return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); }
